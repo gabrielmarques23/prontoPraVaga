@@ -1,0 +1,26 @@
+/* Garante que apenas o currículo apareça e seja otimizado para 1 página na hora de imprimir */
+@media print {
+  body {
+    background-color: #ffffff !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  #curriculoOutput {
+    display: block !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  @page {
+    size: A4;
+    margin: 1.2cm;
+  }
+}
