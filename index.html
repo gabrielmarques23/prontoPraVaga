@@ -44,14 +44,16 @@
                 </div>
 
                 <div>
-                    <label for="habilidades" class="block text-sm font-medium">Habilidades Práticas e Competências</label>
+                    <label for="habilidades" class="block text-sm font-medium">Habilidades Práticas e
+                        Competências</label>
                     <textarea id="habilidades" rows="2"
                         placeholder="Ex: Solda básica, uso de ferramentas, eletricidade, organização..."
                         class="w-full border rounded p-2 text-sm"></textarea>
                 </div>
 
                 <div>
-                    <label for="experiencias" class="block text-sm font-medium">Experiências Anteriores (Resuma brevemente)</label>
+                    <label for="experiencias" class="block text-sm font-medium">Experiências Anteriores (Resuma
+                        brevemente)</label>
                     <textarea id="experiencias" rows="4"
                         placeholder="Ex: Trabalhei no Açougue Silva por 2 anos com atendimento e corte. Depois fui ajudante de obras..."
                         class="w-full border rounded p-2 text-sm"></textarea>
@@ -77,17 +79,23 @@
                     <input type="password" id="apiKey" placeholder="Cole sua API Key do Google AI Studio" required
                         class="w-full border rounded p-2 text-sm">
                     <div class="flex flex-wrap items-center gap-2 mt-1">
-                        <button type="button" id="btnMostrarChave" class="text-xs text-blue-700 underline">Mostrar chave</button>
-                        <label class="text-xs text-gray-600"><input type="checkbox" id="lembrarChave"> Lembrar neste dispositivo</label>
+                        <button type="button" id="btnMostrarChave" class="text-xs text-blue-700 underline">Mostrar
+                            chave</button>
+                        <label class="text-xs text-gray-600"><input type="checkbox" id="lembrarChave"> Lembrar neste
+                            dispositivo</label>
                     </div>
-                    <small class="text-xs text-gray-500">Obtenha no <a href="https://aistudio.google.com/api-keys" target="_blank" rel="noopener noreferrer" class="underline">Google AI Studio</a>. Por padrão, a chave fica apenas nesta sessão.</small>
+                    <small class="text-xs text-gray-500">Obtenha no <a href="https://aistudio.google.com/api-keys"
+                            target="_blank" rel="noopener noreferrer" class="underline">Google AI Studio</a>. Por
+                        padrão, a chave fica apenas nesta sessão.</small>
                 </div>
 
                 <button type="submit" id="btnGerar"
                     class="w-full bg-blue-600 text-white py-2 rounded font-semibold hover:bg-blue-700 transition">
                     Gerar Currículo Perfeito
                 </button>
-                <button type="button" id="btnLimpar" class="w-full border border-gray-300 text-gray-700 py-2 rounded font-semibold hover:bg-gray-100">Limpar dados salvos</button>
+                <button type="button" id="btnLimpar"
+                    class="w-full border border-gray-300 text-gray-700 py-2 rounded font-semibold hover:bg-gray-100">Limpar
+                    dados salvos</button>
             </form>
         </div>
 
@@ -106,15 +114,19 @@
                     class="w-full bg-green-600 text-white py-3 rounded font-bold hover:bg-green-700 shadow-lg">
                     🖨️ Imprimir / Salvar em PDF
                 </button>
-                <button type="button" id="btnCopiar" class="w-full bg-gray-700 text-white py-2 rounded font-semibold hover:bg-gray-800">Copiar como texto</button>
-                <button type="button" id="btnCancelar" class="hidden w-full bg-red-600 text-white py-2 rounded font-semibold hover:bg-red-700">Cancelar geração</button>
+                <button type="button" id="btnCopiar"
+                    class="w-full bg-gray-700 text-white py-2 rounded font-semibold hover:bg-gray-800">Copiar como
+                    texto</button>
+                <button type="button" id="btnCancelar"
+                    class="hidden w-full bg-red-600 text-white py-2 rounded font-semibold hover:bg-red-700">Cancelar
+                    geração</button>
                 <p id="statusPagina" class="text-sm" aria-live="polite"></p>
             </div>
         </div>
 
     </div>
 
-    <!-- Área onde o Currículo Gerado vai aparecer -->
+    <!-- O currículo Gerado vai aparecer aqui -->
     <main id="curriculoOutput" class="hidden" tabindex="-1" aria-label="Currículo gerado">
     </main>
 

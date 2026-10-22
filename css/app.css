@@ -13,8 +13,19 @@
   transition: opacity .2s ease, transform .2s ease;
   z-index: 20;
 }
-.notificacao.visivel { opacity: 1; transform: translate(-50%, 0); }
-#apiKey[aria-invalid="true"] { border-color: #dc2626; outline-color: #dc2626; }
+
+.notificacao.visivel {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+#apiKey[aria-invalid="true"] {
+  border-color: #dc2626;
+  outline-color: #dc2626;
+}
+
 @media (max-width: 640px) {
-  #formCurriculo > .grid.grid-cols-2 { grid-template-columns: 1fr; }
+  #formCurriculo>.grid.grid-cols-2 {
+    grid-template-columns: 1fr;
+  }
 }
