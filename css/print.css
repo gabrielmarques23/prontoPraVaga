@@ -1,0 +1,28 @@
+/* Estilos exclusivos para impressão do currículo. */
+@media print {
+  @page { size: A4; margin: 0; }
+
+  body {
+    background-color: #ffffff !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  #curriculoOutput {
+    display: block !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    width: 210mm !important;
+    height: 297mm !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .cv-sheet { box-shadow: none !important; margin: 0 !important; }
+}
