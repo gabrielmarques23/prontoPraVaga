@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Currículo Prático</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="bg-gray-100 min-h-screen text-gray-800 p-4 sm:p-8">
+
+    <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 no-print">
+
+        <!-- Formulário -->
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-2xl font-bold mb-4 text-blue-600">Seus Dados Profissionais</h2>
+
+            <form id="formCurriculo" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium">Nome Completo</label>
+                    <input type="text" id="nome" required class="w-full border rounded p-2 text-sm">
+                </div>
+
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-sm font-medium">Telefone (com DDD)</label>
+                        <input type="text" id="telefone" required class="w-full border rounded p-2 text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium">Cidade/Estado</label>
+                        <input type="text" id="endereco" required class="w-full border rounded p-2 text-sm">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium">Objetivo Pretendido</label>
+                    <input type="text" id="objetivo" placeholder="Ex: Auxiliar de Produção, Ajudante Geral..." required
+                        class="w-full border rounded p-2 text-sm">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium">Habilidades Práticas e Competências</label>
+                    <textarea id="habilidades" rows="2"
+                        placeholder="Ex: Solda básica, uso de ferramentas, eletricidade, organização..."
+                        class="w-full border rounded p-2 text-sm"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium">Experiências Anteriores (Resuma brevemente)</label>
+                    <textarea id="experiencias" rows="4"
+                        placeholder="Ex: Trabalhei no Açougue Silva por 2 anos com atendimento e corte. Depois fui ajudante de obras..."
+                        class="w-full border rounded p-2 text-sm"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium">Escolaridade</label>
+                    <input type="text" id="formacao" placeholder="Ex: Ensino Médio Completo"
+                        class="w-full border rounded p-2 text-sm">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium">Diferenciais e Pontos Fortes</label>
+                    <input type="text" id="diferenciais"
+                        placeholder="Ex: Pontual, disciplina rígida, facilidade com EPIs e normas de segurança"
+                        class="w-full border rounded p-2 text-sm">
+                    <small class="text-xs text-gray-500">Destaque pontos como pontualidade, disciplina ou facilidade com
+                        normas.</small>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium">Chave de API do Gemini (Gratuita)</label>
+                    <input type="password" id="apiKey" placeholder="Cole sua API Key do Google AI Studio" required
+                        class="w-full border rounded p-2 text-sm">
+                    <small class="text-xs text-gray-500">Obtenha de graça no Google AI Studio</small>
+                </div>
+
+                <button type="submit" id="btnGerar"
+                    class="w-full bg-blue-600 text-white py-2 rounded font-semibold hover:bg-blue-700 transition">
+                    Gerar Currículo Perfeito
+                </button>
+            </form>
+        </div>
+
+        <!-- Painel de Ajuda e Ações -->
+        <div class="flex flex-col justify-between">
+            <div class="bg-blue-50 p-6 rounded-lg border border-blue-200 mb-4">
+                <h3 class="text-lg font-bold text-blue-800 mb-2">Foco no Diferencial Prático</h3>
+                <p class="text-sm text-blue-900 leading-relaxed">
+                    O agente de IA vai estruturar as informações para valorizar sua versatilidade, disposição e
+                    conhecimentos práticos, garantindo um currículo direto ao ponto que **cabe em exatamente 1 página**.
+                </p>
+            </div>
+
+            <div id="acoesArea" class="hidden text-center space-y-4">
+                <button onclick="window.print()"
+                    class="w-full bg-green-600 text-white py-3 rounded font-bold hover:bg-green-700 shadow-lg">
+                    🖨️ Imprimir / Salvar em PDF
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Área onde o Currículo Gerado vai aparecer -->
+    <main id="curriculoOutput" class="hidden bg-white max-w-2xl mx-auto p-8 shadow-md rounded mt-8 text-black">
+    </main>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
