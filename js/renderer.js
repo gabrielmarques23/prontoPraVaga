@@ -1,5 +1,8 @@
 window.PPV = window.PPV || {};
 window.PPV.renderer = (function () {
+  const MIN_SCALE = 0.9;
+  const SCALE_STEP = 0.02;
+
   function element(tag, className, text) {
     const node = document.createElement(tag);
     if (className) node.className = className;
@@ -35,10 +38,11 @@ window.PPV.renderer = (function () {
     output.className = 'cv-sheet';
     output.style.setProperty('--escala', '1');
     output.setAttribute('aria-label', 'Currículo gerado');
+    document.documentElement.classList.add('cv-ready');
 
     const header = element('header', 'cv-header');
     header.appendChild(element('h1', '', text(cv.nome) || 'Currículo'));
-    const contact = [text(cv.telefone), text(cv.cidade)].filter(Boolean).join(' • ');
+    const contact = [text(cv.telefone), text(cv.email), text(cv.cidade)].filter(Boolean).join(' • ');
     if (contact) header.appendChild(element('p', 'cv-contact', contact));
     output.appendChild(header);
 
@@ -66,10 +70,13 @@ window.PPV.renderer = (function () {
 
     addSection(output, 'Habilidades e competências', list(cv.habilidades).slice(0, 8));
     addSection(output, 'Formação', text(cv.formacao));
-    addSection(output, 'Cursos', list(cv.cursos));
-    addSection(output, 'Diferenciais', list(cv.diferenciais));
+    addSection(output, 'Cursos e certificações', list(cv.cursos).slice(0, 5));
+    addSection(output, 'Diferenciais', list(cv.diferenciais).slice(0, 5));
     output.classList.remove('hidden');
     requestAnimationFrame(fit);
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(fit).catch(function () { /* fonte do sistema */ });
+    }
     return output;
   }
 
@@ -79,17 +86,44 @@ window.PPV.renderer = (function () {
     const status = document.getElementById('statusPagina');
     let scale = 1;
     sheet.style.setProperty('--escala', String(scale));
-    for (let i = 0; i < 9 && sheet.scrollHeight > sheet.clientHeight + 1; i += 1) {
-      scale = Math.max(0.84, scale - 0.02);
+    let fits = sheet.scrollHeight <= sheet.clientHeight + 1;
+    for (let i = 0; i < 10 && !fits; i += 1) {
+      if (scale <= MIN_SCALE) break;
+      scale = Math.max(MIN_SCALE, scale - SCALE_STEP);
       sheet.style.setProperty('--escala', String(scale));
-      if (scale <= 0.84) break;
+      fits = sheet.scrollHeight <= sheet.clientHeight + 1;
     }
-    const fits = sheet.scrollHeight <= sheet.clientHeight + 1;
+    fits = sheet.scrollHeight <= sheet.clientHeight + 1;
+    sheet.classList.toggle('cv-overflow', !fits);
+    document.documentElement.classList.toggle('cv-overflow', !fits);
     if (status) {
-      status.textContent = fits ? '✓ O currículo cabe em uma página A4.' : '⚠ O currículo ainda excede uma página. Reduza o conteúdo antes de imprimir.';
-      status.className = fits ? 'text-sm text-green-800' : 'text-sm text-amber-800';
+      if (fits && scale < 1) {
+        status.textContent = '✓ O currículo cabe em uma página A4 (ajustado para ' + Math.round(scale * 100) + '%).';
+        status.className = 'text-sm text-green-800';
+      } else if (fits) {
+        status.textContent = '✓ O currículo cabe em uma página A4.';
+        status.className = 'text-sm text-green-800';
+      } else {
+        status.textContent = '⚠ O currículo ainda excede uma página. Ele será impresso em mais de uma página para não cortar o conteúdo — reduza o texto para caber em uma.';
+        status.className = 'text-sm text-amber-800';
+      }
     }
     return fits;
+  }
+
+  function clear() {
+    const output = document.getElementById('curriculoOutput');
+    if (!output) return;
+    output.replaceChildren();
+    output.className = 'hidden';
+    output.style.removeProperty('--escala');
+    output.removeAttribute('aria-label');
+    document.documentElement.classList.remove('cv-ready', 'cv-overflow');
+    const status = document.getElementById('statusPagina');
+    if (status) {
+      status.textContent = '';
+      status.className = 'text-sm';
+    }
   }
 
   function asPlainText() {
@@ -97,5 +131,5 @@ window.PPV.renderer = (function () {
     return output.innerText || output.textContent || '';
   }
 
-  return { render, fit, asPlainText };
+  return { render, fit, clear, asPlainText };
 })();

@@ -5,13 +5,30 @@
     margin: 0;
   }
 
+  html,
   body {
     background-color: #ffffff !important;
+    height: 297mm;
     margin: 0 !important;
+    overflow: hidden;
     padding: 0 !important;
+    width: 210mm;
   }
 
-  .no-print {
+  .no-print,
+  .notificacao {
+    display: none !important;
+  }
+
+  /* Quando o conteúdo não couber em uma página, libera a altura para imprimir
+     em quantas páginas forem necessárias em vez de cortar o texto. */
+  html.cv-overflow,
+  html.cv-overflow body {
+    height: auto;
+    overflow: visible;
+  }
+
+  html:not(.cv-ready) #curriculoOutput {
     display: none !important;
   }
 
@@ -20,11 +37,18 @@
     box-shadow: none !important;
     margin: 0 !important;
     width: 210mm !important;
-    height: 297mm !important;
+    /* Ligeiramente menor que 297mm evita uma segunda página em branco por
+       arredondamento no Chrome. */
+    height: 296.8mm !important;
     min-height: 0 !important;
     overflow: hidden !important;
     print-color-adjust: exact;
     -webkit-print-color-adjust: exact;
+  }
+
+  html.cv-overflow #curriculoOutput {
+    height: auto !important;
+    overflow: visible !important;
   }
 
   .cv-sheet {
