@@ -26,6 +26,12 @@
                     <input type="text" id="nome" required class="w-full border rounded p-2 text-sm">
                 </div>
 
+                <div>
+                    <label for="email" class="block text-sm font-medium">E-mail</label>
+                    <input type="email" id="email" placeholder="seu.email@exemplo.com"
+                        class="w-full border rounded p-2 text-sm">
+                </div>
+
                 <div class="grid grid-cols-2 gap-2">
                     <div>
                         <label for="telefone" class="block text-sm font-medium">Telefone (com DDD)</label>
@@ -66,6 +72,13 @@
                 </div>
 
                 <div>
+                    <label for="cursos" class="block text-sm font-medium">Cursos e Certificações</label>
+                    <textarea id="cursos" rows="2"
+                        placeholder="Ex: Curso de Segurança no Trabalho (NR-35), Informática Básica..."
+                        class="w-full border rounded p-2 text-sm"></textarea>
+                </div>
+
+                <div>
                     <label for="diferenciais" class="block text-sm font-medium">Diferenciais e Pontos Fortes</label>
                     <input type="text" id="diferenciais"
                         placeholder="Ex: Pontual, disciplina rígida, facilidade com EPIs e normas de segurança"
@@ -75,11 +88,21 @@
                 </div>
 
                 <div>
+                    <label for="modelo" class="block text-sm font-medium">Modelo de IA</label>
+                    <select id="modelo" class="w-full border rounded p-2 text-sm bg-white"></select>
+                    <small class="text-xs text-gray-500">O modelo rápido responde em poucos segundos. Se ele falhar ou
+                        demorar, o app tenta outro automaticamente.</small>
+                </div>
+
+                <div>
                     <label for="apiKey" class="block text-sm font-medium">Chave de API do Gemini (Gratuita)</label>
                     <input type="password" id="apiKey" placeholder="Cole sua API Key do Google AI Studio" required
                         class="w-full border rounded p-2 text-sm">
-                    <div class="flex flex-wrap items-center gap-2 mt-1">
+                    <div class="flex flex-wrap items-center gap-3 mt-1">
                         <button type="button" id="btnMostrarChave" class="text-xs text-blue-700 underline">Mostrar
+                            chave</button>
+                        <button type="button" id="btnTestarChave"
+                            class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded border border-blue-300 hover:bg-blue-200">Testar
                             chave</button>
                         <label class="text-xs text-gray-600"><input type="checkbox" id="lembrarChave"> Lembrar neste
                             dispositivo</label>
@@ -109,18 +132,42 @@
                 </p>
             </div>
 
+            <div id="erroArea" class="hidden bg-red-50 border border-red-300 rounded-lg p-4 mb-4" role="alert">
+                <p id="erroTitulo" class="font-semibold text-sm text-red-900">Não foi possível gerar o currículo</p>
+                <p id="erroMensagem" class="text-sm text-red-900 mt-1 leading-relaxed"></p>
+                <div class="flex flex-wrap gap-2 mt-3">
+                    <button type="button" id="btnTentarNovamente"
+                        class="text-sm bg-red-600 text-white px-3 py-1.5 rounded hover:bg-red-700">Tentar novamente</button>
+                    <button type="button" id="btnFecharErro"
+                        class="text-sm border border-red-300 text-red-800 px-3 py-1.5 rounded hover:bg-red-100">Fechar</button>
+                </div>
+            </div>
+
+            <div id="progressoArea" class="hidden bg-white border border-blue-200 rounded-lg p-4 mb-4">
+                <div class="flex items-center gap-3">
+                    <span class="spinner" aria-hidden="true"></span>
+                    <div>
+                        <p id="progressoTexto" class="text-sm font-semibold text-blue-800" role="status"
+                            aria-live="polite">Gerando currículo…</p>
+                        <p id="progressoDetalhe" class="text-xs text-gray-600"></p>
+                    </div>
+                </div>
+            </div>
+
+            <button type="button" id="btnCancelar"
+                class="hidden w-full bg-red-600 text-white py-2 rounded font-semibold hover:bg-red-700 mb-4">Cancelar
+                geração</button>
+
             <div id="acoesArea" class="hidden text-center space-y-4">
                 <button type="button" id="btnImprimir"
                     class="w-full bg-green-600 text-white py-3 rounded font-bold hover:bg-green-700 shadow-lg">
-                    🖨️ Imprimir / Salvar em PDF
+                    Imprimir / Salvar em PDF
                 </button>
                 <button type="button" id="btnCopiar"
                     class="w-full bg-gray-700 text-white py-2 rounded font-semibold hover:bg-gray-800">Copiar como
                     texto</button>
-                <button type="button" id="btnCancelar"
-                    class="hidden w-full bg-red-600 text-white py-2 rounded font-semibold hover:bg-red-700">Cancelar
-                    geração</button>
                 <p id="statusPagina" class="text-sm" aria-live="polite"></p>
+                <p id="infoGeracao" class="text-xs text-gray-500"></p>
             </div>
         </div>
 

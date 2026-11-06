@@ -1,3 +1,8 @@
+/* Fallback para quando o CDN do Tailwind não carregar. */
+.hidden {
+  display: none !important;
+}
+
 .notificacao {
   background: #172554;
   border-radius: .5rem;
@@ -22,6 +27,33 @@
 #apiKey[aria-invalid="true"] {
   border-color: #dc2626;
   outline-color: #dc2626;
+}
+
+.spinner {
+  animation: ppv-spin .8s linear infinite;
+  border: 3px solid #bfdbfe;
+  border-radius: 50%;
+  border-top-color: #1d4ed8;
+  display: inline-block;
+  flex: none;
+  height: 1.5rem;
+  width: 1.5rem;
+}
+
+@keyframes ppv-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation-duration: 2.5s;
+  }
+
+  .notificacao {
+    transition: none;
+  }
 }
 
 @media (max-width: 640px) {

@@ -1,7 +1,7 @@
 window.PPV = window.PPV || {};
 window.PPV.storage = (function () {
   const config = window.PPV.config;
-  const formIds = ['nome', 'telefone', 'endereco', 'objetivo', 'habilidades', 'experiencias', 'formacao', 'diferenciais'];
+  const formIds = ['nome', 'email', 'telefone', 'endereco', 'objetivo', 'habilidades', 'experiencias', 'formacao', 'cursos', 'diferenciais'];
 
   function safeGet(storage, key) {
     try { return storage.getItem(key); } catch (_) { return null; }
@@ -30,6 +30,15 @@ window.PPV.storage = (function () {
     safeSet(remember ? localStorage : sessionStorage, remember ? config.apiKeyLocalStorage : config.apiKeySessionStorage, value);
   }
 
+  function getModel() {
+    return safeGet(localStorage, config.modelStorage) || '';
+  }
+
+  function saveModel(value) {
+    if (!value) return;
+    safeSet(localStorage, config.modelStorage, value);
+  }
+
   function restoreForm() {
     const stored = safeGet(localStorage, config.formStorage);
     if (!stored) return;
@@ -44,21 +53,23 @@ window.PPV.storage = (function () {
 
   function saveForm() {
     const values = {};
-    formIds.forEach(function (id) { values[id] = document.getElementById(id).value; });
+    formIds.forEach(function (id) {
+      const input = document.getElementById(id);
+      values[id] = input ? input.value : '';
+    });
     safeSet(localStorage, config.formStorage, JSON.stringify(values));
   }
 
   function clear() {
     safeRemove(localStorage, config.formStorage);
     safeRemove(localStorage, config.apiKeyLocalStorage);
+    safeRemove(localStorage, config.modelStorage);
     safeRemove(sessionStorage, config.apiKeySessionStorage);
   }
 
   function clearForm() {
-    const values = {};
-    formIds.forEach(function (id) { values[id] = ''; });
-    safeSet(localStorage, config.formStorage, JSON.stringify(values));
+    safeRemove(localStorage, config.formStorage);
   }
 
-  return { getApiKey, isApiKeyRemembered, saveApiKey, restoreForm, saveForm, clear, clearForm };
+  return { getApiKey, isApiKeyRemembered, saveApiKey, getModel, saveModel, restoreForm, saveForm, clear, clearForm };
 })();
