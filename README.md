@@ -4,10 +4,10 @@ Gerador de currículo em uma página, usando o Gemini API diretamente no navegad
 
 ## Como usar
 
-1. Abra `index.html` em um navegador. O Tailwind da interface é carregado por CDN; a geração depende de conexão com a internet.
-2. Crie uma chave em [Google AI Studio](https://aistudio.google.com/api-keys) e cole-a no campo indicado.
+1. Abra `index.html` em um navegador. O Tailwind da interface é carregado por CDN; a geração depende de conexão com a internet. Para melhor funcionamento do clipboard e da impressão, prefira servir a pasta com um servidor local (por exemplo, `npx serve .`).
+2. Crie uma chave em [Google AI Studio](https://aistudio.google.com/api-keys) e cole-a no campo indicado. Use **Testar chave** para confirmar o acesso antes de gerar.
 3. Preencha seus dados e selecione **Gerar Currículo Perfeito**.
-4. Confira o aviso de ajuste A4. Se exceder uma página, reduza o texto e gere novamente.
+4. Confira o aviso de ajuste A4. Se o texto exceder uma página, o app reduz a escala e, se ainda não couber, imprime em mais de uma página; para um currículo de uma página, reduza o texto e gere novamente.
 5. Use **Imprimir / Salvar em PDF** ou **Copiar como texto**.
 
 ## Estrutura
@@ -25,4 +25,8 @@ Os dados profissionais preenchidos também são salvos automaticamente no `local
 
 ## Limite de impressão
 
-O currículo é renderizado como texto (não como HTML gerado pela IA) e usa uma folha A4. O app tenta reduzir a escala até um limite legível e avisa quando o conteúdo ainda excede a área imprimível. O resultado pode variar entre navegadores e configurações de impressão; confira a prévia antes de salvar em PDF.
+O currículo é renderizado como texto (não como HTML gerado pela IA) e usa uma folha A4. O app reduz a escala até um limite legível e avisa quando o conteúdo ainda excede a área imprimível. Nesse caso, a impressão passa a usar mais de uma página em vez de cortar o texto. O resultado pode variar entre navegadores e configurações de impressão; confira a prévia antes de salvar em PDF.
+
+## Modelos e tempo de resposta
+
+O app usa por padrão um modelo Flash-Lite, mais rápido para estruturar texto. Se o modelo escolhido falhar, demorar mais de 30 segundos ou estourar a cota, o app tenta automaticamente os modelos alternativos (até 60 segundos no total). O modelo usado e o tempo de geração aparecem abaixo dos botões de ação. A geração também tem um teto de tokens para evitar esperas longas.
