@@ -4,7 +4,7 @@ Gerador de currículo em uma página, usando o Gemini API diretamente no navegad
 
 ## Como usar
 
-1. Abra `index.html` em um navegador. O Tailwind da interface é carregado por CDN; a geração depende de conexão com a internet. Para melhor funcionamento do clipboard e da impressão, prefira servir a pasta com um servidor local (por exemplo, `npx serve .`).
+1. Abra `index.html` em um navegador. A interface não usa dependências externas; a geração depende de conexão com a internet. Para melhor funcionamento do clipboard e da impressão, prefira servir a pasta com um servidor local (por exemplo, `npx serve .`).
 2. Crie uma chave em [Google AI Studio](https://aistudio.google.com/api-keys) e cole-a no campo indicado. Use **Testar chave** para confirmar o acesso antes de gerar.
 3. Preencha seus dados e selecione **Gerar Currículo Perfeito**.
 4. Confira o aviso de ajuste A4. Quando sobra espaço, o app amplia o espaçamento entre as seções para preencher melhor a folha. Se o texto exceder uma página, ele reduz a escala e, se ainda não couber, imprime em mais de uma página; para um currículo de uma página, reduza o texto e gere novamente.
@@ -15,7 +15,7 @@ Gerador de currículo em uma página, usando o Gemini API diretamente no navegad
 - `index.html`: formulário e interface.
 - `js/`: configuração, prompt/schema, cliente Gemini, renderer, persistência e eventos. São scripts clássicos carregados na ordem indicada no HTML para manter o uso sem build.
 - `js/app.js`: inicialização da aplicação.
-- `css/`: estilos da interface (`app.css`), do currículo (`curriculum.css`) e de impressão (`print.css`).
+- `css/`: estilos globais da interface (`global.css`), componentes (`app.css`), do currículo (`curriculum.css`) e de impressão (`print.css`).
 
 ## Chave e privacidade
 
