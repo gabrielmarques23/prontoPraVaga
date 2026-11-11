@@ -1,4 +1,4 @@
-/* Fallback para quando o CDN do Tailwind não carregar. */
+/* Componentes e utilitários da interface. */
 .hidden {
   display: none !important;
 }
@@ -53,11 +53,5 @@
 
   .notificacao {
     transition: none;
-  }
-}
-
-@media (max-width: 640px) {
-  #formCurriculo>.grid.grid-cols-2 {
-    grid-template-columns: 1fr;
   }
 }

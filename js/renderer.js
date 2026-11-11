@@ -144,16 +144,16 @@ window.PPV.renderer = (function () {
     if (status) {
       if (ok && scale < 1) {
         status.textContent = '✓ O currículo cabe em uma página A4 (ajustado para ' + Math.round(scale * 100) + '%).';
-        status.className = 'text-sm text-green-800';
+        status.className = 'status status-ok';
       } else if (ok && respiro > 0) {
         status.textContent = '✓ O currículo cabe em uma página A4, com o espaçamento ampliado para preencher melhor a folha.';
-        status.className = 'text-sm text-green-800';
+        status.className = 'status status-ok';
       } else if (ok) {
         status.textContent = '✓ O currículo cabe em uma página A4.';
-        status.className = 'text-sm text-green-800';
+        status.className = 'status status-ok';
       } else {
         status.textContent = '⚠ O currículo ainda excede uma página. Ele será impresso em mais de uma página para não cortar o conteúdo — reduza o texto para caber em uma.';
-        status.className = 'text-sm text-amber-800';
+        status.className = 'status status-warn';
       }
     }
     return ok;
@@ -171,7 +171,7 @@ window.PPV.renderer = (function () {
     const status = document.getElementById('statusPagina');
     if (status) {
       status.textContent = '';
-      status.className = 'text-sm';
+      status.className = 'status';
     }
   }
 
