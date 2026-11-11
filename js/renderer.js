@@ -2,6 +2,10 @@ window.PPV = window.PPV || {};
 window.PPV.renderer = (function () {
   const MIN_SCALE = 0.9;
   const SCALE_STEP = 0.02;
+  // Espaçamento extra máximo (em px) aplicado entre seções quando sobra folha.
+  const MAX_RESPIRO = 40;
+  // Margem de segurança para o espaçamento não estourar na impressão (296,8 mm).
+  const RESPIRO_SAFETY = 3;
 
   function element(tag, className, text) {
     const node = document.createElement(tag);
@@ -37,6 +41,7 @@ window.PPV.renderer = (function () {
     output.replaceChildren();
     output.className = 'cv-sheet';
     output.style.setProperty('--escala', '1');
+    output.style.setProperty('--respiro', '0px');
     output.setAttribute('aria-label', 'Currículo gerado');
     document.documentElement.classList.add('cv-ready');
 
@@ -80,27 +85,70 @@ window.PPV.renderer = (function () {
     return output;
   }
 
+  function fits(sheet, slackPx) {
+    const available = sheet.getBoundingClientRect().height;
+    const previousHeight = sheet.style.height;
+    // Com a altura fixa da folha, scrollHeight nunca fica menor que a folha.
+    // Medir com altura automática revela o espaço realmente ocupado.
+    sheet.style.height = 'auto';
+    const used = sheet.getBoundingClientRect().height;
+    sheet.style.height = previousHeight;
+    return used <= available - (slackPx || 0) + 0.5;
+  }
+
+  function setScale(sheet, scale) {
+    sheet.style.setProperty('--escala', String(scale));
+  }
+
+  function setRespiro(sheet, px) {
+    sheet.style.setProperty('--respiro', px + 'px');
+  }
+
   function fit() {
     const sheet = document.getElementById('curriculoOutput');
     if (!sheet || sheet.classList.contains('hidden')) return true;
     const status = document.getElementById('statusPagina');
+
     let scale = 1;
-    sheet.style.setProperty('--escala', String(scale));
-    let fits = sheet.scrollHeight <= sheet.clientHeight + 1;
-    for (let i = 0; i < 10 && !fits; i += 1) {
-      if (scale <= MIN_SCALE) break;
-      scale = Math.max(MIN_SCALE, scale - SCALE_STEP);
-      sheet.style.setProperty('--escala', String(scale));
-      fits = sheet.scrollHeight <= sheet.clientHeight + 1;
+    let respiro = 0;
+    setScale(sheet, scale);
+    setRespiro(sheet, respiro);
+
+    if (fits(sheet)) {
+      // Currículo curto: procura o maior espaçamento que ainda caiba na folha,
+      // para o conteúdo não ficar espremido no topo com a metade de baixo vazia.
+      let low = 0;
+      let high = MAX_RESPIRO;
+      while (low <= high) {
+        const mid = Math.round((low + high) / 2);
+        setRespiro(sheet, mid);
+        if (fits(sheet, RESPIRO_SAFETY)) {
+          respiro = mid;
+          low = mid + 1;
+        } else {
+          high = mid - 1;
+        }
+      }
+      setRespiro(sheet, respiro);
+    } else {
+      // Currículo longo: mantém o espaçamento base e reduz a fonte até caber.
+      while (scale > MIN_SCALE && !fits(sheet)) {
+        scale = Math.max(MIN_SCALE, scale - SCALE_STEP);
+        setScale(sheet, scale);
+      }
     }
-    fits = sheet.scrollHeight <= sheet.clientHeight + 1;
-    sheet.classList.toggle('cv-overflow', !fits);
-    document.documentElement.classList.toggle('cv-overflow', !fits);
+
+    const ok = fits(sheet);
+    sheet.classList.toggle('cv-overflow', !ok);
+    document.documentElement.classList.toggle('cv-overflow', !ok);
     if (status) {
-      if (fits && scale < 1) {
+      if (ok && scale < 1) {
         status.textContent = '✓ O currículo cabe em uma página A4 (ajustado para ' + Math.round(scale * 100) + '%).';
         status.className = 'text-sm text-green-800';
-      } else if (fits) {
+      } else if (ok && respiro > 0) {
+        status.textContent = '✓ O currículo cabe em uma página A4, com o espaçamento ampliado para preencher melhor a folha.';
+        status.className = 'text-sm text-green-800';
+      } else if (ok) {
         status.textContent = '✓ O currículo cabe em uma página A4.';
         status.className = 'text-sm text-green-800';
       } else {
@@ -108,7 +156,7 @@ window.PPV.renderer = (function () {
         status.className = 'text-sm text-amber-800';
       }
     }
-    return fits;
+    return ok;
   }
 
   function clear() {
@@ -117,6 +165,7 @@ window.PPV.renderer = (function () {
     output.replaceChildren();
     output.className = 'hidden';
     output.style.removeProperty('--escala');
+    output.style.removeProperty('--respiro');
     output.removeAttribute('aria-label');
     document.documentElement.classList.remove('cv-ready', 'cv-overflow');
     const status = document.getElementById('statusPagina');

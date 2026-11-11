@@ -1,5 +1,7 @@
 .cv-sheet {
   --escala: 1;
+  /* Espaçamento extra distribuído pelo fit() quando sobra espaço na folha. */
+  --respiro: 0px;
   box-sizing: border-box;
   width: 210mm;
   height: 297mm;
@@ -11,12 +13,12 @@
   box-shadow: 0 4px 18px rgb(0 0 0 / 18%);
   font-family: Arial, Helvetica, sans-serif;
   font-size: calc(11px * var(--escala));
-  line-height: 1.28;
+  line-height: 1.34;
 }
 
 .cv-header {
   border-bottom: 2px solid #1d4ed8;
-  margin-bottom: 1em;
+  margin-bottom: calc(1em + var(--respiro) * .5);
   padding-bottom: .65em;
 }
 
@@ -34,7 +36,7 @@
 }
 
 .cv-section {
-  margin: 0 0 .8em;
+  margin: 0 0 calc(.9em + var(--respiro));
   break-inside: avoid;
 }
 
@@ -42,26 +44,26 @@
   border-bottom: 1px solid #cbd5e1;
   color: #123b72;
   font-size: 1.12em;
-  margin: 0 0 .3em;
+  margin: 0 0 calc(.35em + var(--respiro) * .2);
   padding-bottom: .12em;
   text-transform: uppercase;
 }
 
 .cv-section p {
-  margin: .15em 0;
+  margin: calc(.2em + var(--respiro) * .15) 0;
 }
 
 .cv-section ul {
-  margin: .15em 0 0;
+  margin: calc(.2em + var(--respiro) * .15) 0 0;
   padding-left: 1.25em;
 }
 
 .cv-section li {
-  margin: 0 0 .12em;
+  margin: 0 0 calc(.16em + var(--respiro) * .25);
 }
 
 .cv-experience {
-  margin: 0 0 .45em;
+  margin: 0 0 calc(.55em + var(--respiro) * .5);
   break-inside: avoid;
 }
 
