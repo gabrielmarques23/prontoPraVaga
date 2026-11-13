@@ -75,8 +75,30 @@ window.PPV.renderer = (function () {
 
     addSection(output, 'Habilidades e competências', list(cv.habilidades).slice(0, 8));
     addSection(output, 'Formação', text(cv.formacao));
-    addSection(output, 'Cursos e certificações', list(cv.cursos).slice(0, 5));
-    addSection(output, 'Diferenciais', list(cv.diferenciais).slice(0, 5));
+
+    if (Array.isArray(cv.cursos) && cv.cursos.length) {
+      const section = element('section', 'cv-section');
+      section.appendChild(element('h2', '', 'Cursos e certificações'));
+      const ul = element('ul');
+      cv.cursos.slice(0, 4).forEach(function (course) {
+        const name = typeof course === 'string' ? text(course) : text(course && course.nome);
+        if (!name) return;
+        const period = typeof course === 'string' ? '' : text(course && course.periodo);
+        const item = element('li', 'cv-course');
+        item.appendChild(document.createTextNode(name));
+        if (period) {
+          item.appendChild(document.createTextNode(' — '));
+          item.appendChild(element('span', 'cv-period', period));
+        }
+        ul.appendChild(item);
+      });
+      if (ul.children.length) {
+        section.appendChild(ul);
+        output.appendChild(section);
+      }
+    }
+
+    addSection(output, 'Diferenciais', list(cv.diferenciais).slice(0, 4));
     output.classList.remove('hidden');
     requestAnimationFrame(fit);
     if (document.fonts && document.fonts.ready) {

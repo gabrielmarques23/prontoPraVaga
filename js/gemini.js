@@ -110,6 +110,12 @@ window.PPV.gemini = (function () {
     return Array.isArray(value) ? value.map(asText).filter(Boolean) : [];
   }
 
+  function normalizeCourse(item) {
+    if (typeof item === 'string') return { nome: item.trim(), periodo: '' };
+    if (!item || typeof item !== 'object') return { nome: '', periodo: '' };
+    return { nome: asText(item.nome), periodo: asText(item.periodo) };
+  }
+
   function normalizeCv(raw) {
     const cv = raw && typeof raw === 'object' ? raw : {};
     const experiences = Array.isArray(cv.experiencias) ? cv.experiencias : [];
@@ -126,15 +132,18 @@ window.PPV.gemini = (function () {
           empresa: asText(experience.empresa),
           cargo: asText(experience.cargo),
           periodo: asText(experience.periodo),
-          atividades: asList(experience.atividades)
+          atividades: asList(experience.atividades).slice(0, 4)
         };
       }).filter(function (experience) {
         return experience.empresa || experience.cargo || experience.atividades.length;
       }).slice(0, 3),
       habilidades: asList(cv.habilidades).slice(0, 8),
       formacao: asText(cv.formacao),
-      cursos: asList(cv.cursos).slice(0, 5),
-      diferenciais: asList(cv.diferenciais).slice(0, 5)
+      cursos: (Array.isArray(cv.cursos) ? cv.cursos : [])
+        .map(normalizeCourse)
+        .filter(function (course) { return course.nome; })
+        .slice(0, 4),
+      diferenciais: asList(cv.diferenciais).slice(0, 4)
     };
   }
 
