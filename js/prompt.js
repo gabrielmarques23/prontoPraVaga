@@ -22,7 +22,16 @@ window.PPV.prompt = (function () {
       },
       habilidades: { type: 'ARRAY', items: { type: 'STRING' } },
       formacao: { type: 'STRING' },
-      cursos: { type: 'ARRAY', items: { type: 'STRING' } },
+      cursos: {
+        type: 'ARRAY', maxItems: 4,
+        items: {
+          type: 'OBJECT',
+          properties: {
+            nome: { type: 'STRING' }, periodo: { type: 'STRING' }
+          },
+          required: ['nome', 'periodo']
+        }
+      },
       diferenciais: { type: 'ARRAY', items: { type: 'STRING' } }
     },
     required: ['nome', 'email', 'telefone', 'cidade', 'objetivo', 'resumo', 'experiencias', 'habilidades', 'formacao', 'cursos', 'diferenciais']
@@ -38,6 +47,8 @@ window.PPV.prompt = (function () {
     'Prefira frases completas e naturais, com verbos de ação, em vez de listas telegráficas. Desenvolva apenas o que foi informado, acrescentando no máximo um detalhe de contexto por frase.',
     'O resumo deve ter 2 ou 3 frases, no máximo 420 caracteres, ligando objetivo, habilidades e experiência.',
     'Cada experiência deve ter 2 ou 3 atividades de até 180 caracteres, explicando o que era feito e como.',
+    'Para cada experiência e cada curso, copie o campo periodo exatamente como foi recebido, inclusive quando tiver apenas o ano ou a palavra Atual/Em andamento. Nunca calcule, converta, complete ou invente datas.',
+    'Mantenha a mesma ordem e a mesma quantidade de experiências e cursos recebidos. Cada curso deve conter o nome e o periodo informados.',
     'Limite a três experiências, quatro atividades por experiência, oito habilidades, quatro cursos e quatro diferenciais.',
     'Responda somente no formato JSON definido pelo schema.'
   ].join(' ');

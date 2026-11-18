@@ -50,17 +50,22 @@
                 <div>
                     <label for="habilidades" class="field-label">Habilidades Práticas e
                         Competências</label>
-                    <textarea id="habilidades" rows="2"
+                    <textarea id="habilidades" rows="3"
                         placeholder="Ex: Solda básica, uso de ferramentas, eletricidade, organização..."
                         class="field-input"></textarea>
+                    <small class="hint">Separe os itens por linha ou por vírgula.</small>
                 </div>
 
                 <div>
-                    <label for="experiencias" class="field-label">Experiências Anteriores (Resuma
-                        brevemente)</label>
-                    <textarea id="experiencias" rows="4"
-                        placeholder="Ex: Trabalhei no Açougue Silva por 2 anos com atendimento e corte. Depois fui ajudante de obras..."
-                        class="field-input"></textarea>
+                    <span class="field-label" id="experienciasLabel">Experiências Anteriores</span>
+                    <p class="hint">Adicione cada experiência. As datas são opcionais: informe mês e ano ou
+                        somente o ano.</p>
+                    <div id="experiencias" class="repeater" data-template="tplExperiencia" data-max="3"
+                        data-min="1" aria-labelledby="experienciasLabel">
+                        <div class="repeater-items" data-items></div>
+                        <button type="button" class="btn btn-outline btn-add" data-action="add">+ Adicionar
+                            experiência</button>
+                    </div>
                 </div>
 
                 <div>
@@ -69,10 +74,15 @@
                 </div>
 
                 <div>
-                    <label for="cursos" class="field-label">Cursos e Certificações</label>
-                    <textarea id="cursos" rows="2"
-                        placeholder="Ex: Curso de Segurança no Trabalho (NR-35), Informática Básica..."
-                        class="field-input"></textarea>
+                    <span class="field-label" id="cursosLabel">Cursos e Certificações</span>
+                    <p class="hint">Adicione cada curso ou certificação. As datas são opcionais: informe mês e
+                        ano ou somente o ano.</p>
+                    <div id="cursos" class="repeater" data-template="tplCurso" data-max="4" data-min="1"
+                        aria-labelledby="cursosLabel">
+                        <div class="repeater-items" data-items></div>
+                        <button type="button" class="btn btn-outline btn-add" data-action="add">+ Adicionar
+                            curso</button>
+                    </div>
                 </div>
 
                 <div>
@@ -81,7 +91,7 @@
                         placeholder="Ex: Pontual, disciplina rígida, facilidade com EPIs e normas de segurança"
                         class="field-input">
                     <small class="hint">Destaque pontos como pontualidade, disciplina ou facilidade com
-                        normas.</small>
+                        normas. Separe os itens por vírgula.</small>
                 </div>
 
                 <div>
@@ -165,11 +175,89 @@
     </main>
 
     <div id="notificacao" class="notificacao" role="status" aria-live="polite" aria-atomic="true"></div>
+
+    <template id="tplExperiencia">
+        <fieldset class="repeater-item">
+            <legend class="repeater-legend">Experiência</legend>
+            <button type="button" class="btn-link btn-remove" data-action="remove"
+                aria-label="Remover experiência">Remover</button>
+            <label class="field-label">Cargo
+                <input type="text" class="field-input" data-field="cargo"
+                    placeholder="Ex: Auxiliar de Produção" autocomplete="organization-title">
+            </label>
+            <label class="field-label">Empresa
+                <input type="text" class="field-input" data-field="empresa" placeholder="Ex: Indústria ABC"
+                    autocomplete="organization">
+            </label>
+            <div class="date-fields">
+                <div class="date-group">
+                    <span class="field-label">Início</span>
+                    <div class="date-inputs">
+                        <select class="field-input date-month" data-field="inicioMes"
+                            aria-label="Mês de início"></select>
+                        <input type="text" class="field-input date-year" data-field="inicioAno"
+                            inputmode="numeric" maxlength="4" placeholder="Ano" aria-label="Ano de início">
+                    </div>
+                </div>
+                <div class="date-group">
+                    <span class="field-label">Fim</span>
+                    <div class="date-inputs">
+                        <select class="field-input date-month" data-field="fimMes"
+                            aria-label="Mês de fim"></select>
+                        <input type="text" class="field-input date-year" data-field="fimAno"
+                            inputmode="numeric" maxlength="4" placeholder="Ano" aria-label="Ano de fim">
+                    </div>
+                </div>
+            </div>
+            <label class="check"><input type="checkbox" data-field="emAndamento"> Em andamento</label>
+            <label class="field-label">Atividades
+                <textarea class="field-input" rows="3" data-field="atividades"
+                    placeholder="Uma atividade por linha. Ex: Montagem de peças na linha de produção."></textarea>
+            </label>
+            <small class="hint">Uma atividade por linha, até 4. Se o fim ficar vazio, marque “Em
+                andamento”.</small>
+        </fieldset>
+    </template>
+
+    <template id="tplCurso">
+        <fieldset class="repeater-item">
+            <legend class="repeater-legend">Curso</legend>
+            <button type="button" class="btn-link btn-remove" data-action="remove"
+                aria-label="Remover curso">Remover</button>
+            <label class="field-label">Curso ou certificação
+                <input type="text" class="field-input" data-field="nome"
+                    placeholder="Ex: NR-35 - Trabalho em Altura">
+            </label>
+            <div class="date-fields">
+                <div class="date-group">
+                    <span class="field-label">Início</span>
+                    <div class="date-inputs">
+                        <select class="field-input date-month" data-field="inicioMes"
+                            aria-label="Mês de início"></select>
+                        <input type="text" class="field-input date-year" data-field="inicioAno"
+                            inputmode="numeric" maxlength="4" placeholder="Ano" aria-label="Ano de início">
+                    </div>
+                </div>
+                <div class="date-group">
+                    <span class="field-label">Fim</span>
+                    <div class="date-inputs">
+                        <select class="field-input date-month" data-field="fimMes"
+                            aria-label="Mês de fim"></select>
+                        <input type="text" class="field-input date-year" data-field="fimAno"
+                            inputmode="numeric" maxlength="4" placeholder="Ano" aria-label="Ano de fim">
+                    </div>
+                </div>
+            </div>
+            <label class="check"><input type="checkbox" data-field="emAndamento"> Em andamento</label>
+        </fieldset>
+    </template>
+
     <script src="js/config.js"></script>
     <script src="js/prompt.js"></script>
     <script src="js/gemini.js"></script>
     <script src="js/renderer.js"></script>
     <script src="js/storage.js"></script>
+    <script src="js/repeater.js"></script>
     <script src="js/main.js"></script>
     <script src="js/app.js"></script>
 </body>

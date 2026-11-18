@@ -6,6 +6,8 @@ window.PPV.main = (function () {
   let fitTimer = null;
   let startedAt = 0;
   let progressLabel = '';
+  let experiencias = null;
+  let cursos = null;
 
   function el(id) {
     return document.getElementById(id);
@@ -19,19 +21,91 @@ window.PPV.main = (function () {
     notify.timer = setTimeout(function () { notice.classList.remove('visivel'); }, durationMs || 4500);
   }
 
+  function fieldValue(id) {
+    const input = el(id);
+    return input ? input.value.trim() : '';
+  }
+
+  function splitLines(value) {
+    return String(value || '')
+      .split(/\r?\n/)
+      .map(function (line) { return line.trim(); })
+      .filter(Boolean);
+  }
+
+  function splitList(value) {
+    return String(value || '')
+      .split(/[\n,;]+/)
+      .map(function (item) { return item.trim(); })
+      .filter(Boolean);
+  }
+
   function getFormData() {
+    const experienciasData = experiencias.getData({ skipEmpty: true })
+      .filter(function (row) { return row.cargo || row.empresa || row.atividades; })
+      .slice(0, 3)
+      .map(function (row) {
+        return {
+          cargo: row.cargo,
+          empresa: row.empresa,
+          periodo: window.PPV.repeater.formatPeriodo(row, 'Atual'),
+          atividades: splitLines(row.atividades).slice(0, 4)
+        };
+      });
+    const cursosData = cursos.getData({ skipEmpty: true })
+      .filter(function (row) { return row.nome; })
+      .slice(0, 4)
+      .map(function (row) {
+        return {
+          nome: row.nome,
+          periodo: window.PPV.repeater.formatPeriodo(row, 'Em andamento')
+        };
+      });
+
     return {
-      nome: el('nome').value.trim(),
-      email: el('email').value.trim(),
-      telefone: el('telefone').value.trim(),
-      cidade: el('endereco').value.trim(),
-      objetivo: el('objetivo').value.trim(),
-      habilidades: el('habilidades').value.trim(),
-      experiencias: el('experiencias').value.trim(),
-      formacao: el('formacao').value.trim(),
-      cursos: el('cursos').value.trim(),
-      diferenciais: el('diferenciais').value.trim()
+      nome: fieldValue('nome'),
+      email: fieldValue('email'),
+      telefone: fieldValue('telefone'),
+      cidade: fieldValue('endereco'),
+      objetivo: fieldValue('objetivo'),
+      habilidades: splitList(fieldValue('habilidades')).slice(0, 8),
+      experiencias: experienciasData,
+      formacao: fieldValue('formacao'),
+      cursos: cursosData,
+      diferenciais: splitList(fieldValue('diferenciais')).slice(0, 4)
     };
+  }
+
+  function collectFormState() {
+    return {
+      nome: fieldValue('nome'),
+      email: fieldValue('email'),
+      telefone: fieldValue('telefone'),
+      endereco: fieldValue('endereco'),
+      objetivo: fieldValue('objetivo'),
+      habilidades: fieldValue('habilidades'),
+      formacao: fieldValue('formacao'),
+      diferenciais: fieldValue('diferenciais'),
+      experiencias: experiencias.getData({ skipEmpty: true }),
+      cursos: cursos.getData({ skipEmpty: true })
+    };
+  }
+
+  function applyFormData(data) {
+    ['nome', 'email', 'telefone', 'endereco', 'objetivo', 'habilidades', 'formacao', 'diferenciais']
+      .forEach(function (id) {
+        const input = el(id);
+        if (input && typeof data[id] === 'string') input.value = data[id];
+      });
+    experiencias.setData(Array.isArray(data.experiencias) ? data.experiencias : []);
+    cursos.setData(Array.isArray(data.cursos) ? data.cursos : []);
+  }
+
+  function scheduleSave() {
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(function () {
+      window.PPV.storage.saveForm(collectFormState());
+    }, 500);
   }
 
   function selectedModel() {
@@ -97,6 +171,12 @@ window.PPV.main = (function () {
       : '';
   }
 
+  function validateDates() {
+    const experienceError = experiencias.validate();
+    if (!experienceError.ok) return experienceError;
+    return cursos.validate();
+  }
+
   async function handleSubmit(event) {
     event.preventDefault();
     const apiKeyInput = el('apiKey');
@@ -108,8 +188,16 @@ window.PPV.main = (function () {
       return;
     }
     apiKeyInput.removeAttribute('aria-invalid');
+
+    const dateCheck = validateDates();
+    if (!dateCheck.ok) {
+      notify(dateCheck.message, 7000);
+      return;
+    }
+
     window.PPV.storage.saveApiKey(apiKey, el('lembrarChave').checked);
     window.PPV.storage.saveModel(selectedModel());
+    window.PPV.storage.saveForm(collectFormState());
 
     clearOutput();
     hideError();
@@ -117,10 +205,12 @@ window.PPV.main = (function () {
     setLoading(true);
     startProgress();
     try {
-      const result = await window.PPV.gemini.generate(apiKey, getFormData(), activeController.signal, {
-        model: selectedModel(),
-        onProgress: updateProgress
-      });
+      const result = await window.PPV.gemini.generate(
+        apiKey,
+        getFormData(),
+        activeController.signal,
+        { model: selectedModel(), onProgress: updateProgress }
+      );
       window.PPV.renderer.render(result);
       el('acoesArea').classList.remove('hidden');
       const meta = result.__meta;
@@ -224,8 +314,36 @@ window.PPV.main = (function () {
     select.addEventListener('change', function () { window.PPV.storage.saveModel(select.value); });
   }
 
+  function bindRepeaters() {
+    experiencias = window.PPV.repeater.create({
+      root: el('experiencias'),
+      templateId: 'tplExperiencia',
+      max: 3,
+      min: 1,
+      label: 'Experiência',
+      article: 'da',
+      onChange: scheduleSave
+    });
+    cursos = window.PPV.repeater.create({
+      root: el('cursos'),
+      templateId: 'tplCurso',
+      max: 4,
+      min: 1,
+      label: 'Curso',
+      article: 'do',
+      onChange: scheduleSave
+    });
+  }
+
   function bind() {
-    window.PPV.storage.restoreForm();
+    bindRepeaters();
+
+    const savedForm = window.PPV.storage.loadForm();
+    if (savedForm) {
+      applyFormData(savedForm);
+      window.PPV.storage.saveForm(collectFormState());
+    }
+
     bindModelSelect();
 
     const remember = el('lembrarChave');
@@ -245,9 +363,13 @@ window.PPV.main = (function () {
     });
     el('btnLimpar').addEventListener('click', function () {
       if (activeController) activeController.abort();
+      clearTimeout(saveTimer);
+      saveTimer = null;
       window.PPV.storage.clear();
       window.PPV.storage.clearForm();
       el('formCurriculo').reset();
+      experiencias.reset();
+      cursos.reset();
       const modelSelect = el('modelo');
       if (modelSelect) modelSelect.selectedIndex = 0;
       remember.checked = false;
@@ -275,8 +397,7 @@ window.PPV.main = (function () {
     });
     el('formCurriculo').addEventListener('input', function (event) {
       if (event.target.id === 'apiKey') return;
-      clearTimeout(saveTimer);
-      saveTimer = setTimeout(window.PPV.storage.saveForm, 500);
+      scheduleSave();
     });
     window.addEventListener('resize', function () {
       clearTimeout(fitTimer);
